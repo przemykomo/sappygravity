@@ -1,0 +1,25 @@
+{
+    "required": true,
+    "package": "xyz.przemyk.sappygravity.mixin",
+    "compatibilityLevel": "JAVA_21",
+    "mixins": [
+        "AbstractArrowMixin",
+        "DirectionMixin",
+        "EntityAccessor",
+        "EntityMixin",
+        "PlayerMixin",
+        "ProjectileMixin",
+        "ServerGamePacketListenerImplMixin",
+        "ServerPlayerMixin",
+        "ThrowableProjectileMixin"
+    ],
+    "client": [
+        "CameraMixin",
+        "EntityRenderDispatcherMixin",
+        "PlayerRendererMixin",
+        "ScreenEffectRendererMixin"
+    ],
+    "injectors": {
+        "defaultRequire": 1
+    }
+}

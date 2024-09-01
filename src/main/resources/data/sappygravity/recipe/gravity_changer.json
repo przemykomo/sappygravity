@@ -1,0 +1,23 @@
+{
+    "type": "minecraft:crafting_shaped",
+    "key": {
+        "X": {
+            "item": "minecraft:nether_star"
+        },
+        "P": {
+            "item": "minecraft:ender_eye"
+        },
+        "N": {
+            "tag": "c:ingots/netherite"
+        }
+    },
+    "pattern": [
+        "NPN",
+        "PXP",
+        "NPN"
+    ],
+    "result": {
+        "count": 1,
+        "id": "sappygravity:gravity_changer"
+    }
+}
