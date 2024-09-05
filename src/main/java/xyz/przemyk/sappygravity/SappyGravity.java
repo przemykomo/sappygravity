@@ -2,6 +2,8 @@ package xyz.przemyk.sappygravity;
 
 import com.mojang.serialization.Codec;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.CreativeModeTabs;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Rarity;
@@ -10,7 +12,11 @@ import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.ModContainer;
 import net.neoforged.fml.common.Mod;
 import net.neoforged.neoforge.attachment.AttachmentType;
+import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.event.BuildCreativeModeTabContentsEvent;
+import net.neoforged.neoforge.event.entity.player.PlayerEvent;
+import net.neoforged.neoforge.event.tick.PlayerTickEvent;
+import net.neoforged.neoforge.network.PacketDistributor;
 import net.neoforged.neoforge.network.event.RegisterPayloadHandlersEvent;
 import net.neoforged.neoforge.network.registration.PayloadRegistrar;
 import net.neoforged.neoforge.registries.DeferredRegister;
@@ -46,6 +52,8 @@ public class SappyGravity {
         eventBus.addListener(SappyGravity::buildContents);
         ITEMS.register(eventBus);
         ATTACHMENT_TYPES.register(eventBus);
+        NeoForge.EVENT_BUS.addListener(SappyGravity::onPlayerTick);
+        NeoForge.EVENT_BUS.addListener(SappyGravity::onPlayerJoin);
     }
 
     public static void registerPackets(final RegisterPayloadHandlersEvent event) {
@@ -82,5 +90,26 @@ public class SappyGravity {
 
     public static long getRotationTimeDiff(Entity entity) {
         return entity.level().getGameTime() - entity.getData(ROTATION_BEGIN_TIME);
+    }
+
+    public static void onPlayerTick(PlayerTickEvent.Pre event) {
+        Player player = event.getEntity();
+        if (player.getData(INVERTED_GRAVITY) && player.tickCount % 10 == 0) {
+            Inventory inventory = player.getInventory();
+            for (int i = 0; i < inventory.items.size(); i++) {
+                if (inventory.items.get(i).is(GRAVITY_CHANGER_ITEM.get())) {
+                    return;
+                }
+            }
+
+            setGravity(player, false);
+        }
+    }
+
+    public static void onPlayerJoin(PlayerEvent.PlayerLoggedInEvent event) {
+        Player player = event.getEntity();
+        if (!player.level().isClientSide) {
+            PacketDistributor.sendToPlayersTrackingEntityAndSelf(player, new InvertGravityPacket(player.getData(INVERTED_GRAVITY), player.getId()));
+        }
     }
 }

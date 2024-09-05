@@ -16,7 +16,7 @@ import xyz.przemyk.sappygravity.SappyGravity;
 @Mixin(ScreenEffectRenderer.class)
 public abstract class ScreenEffectRendererMixin {
 
-    @SuppressWarnings({"PointlessBitwiseExpression", "resource"})
+    @SuppressWarnings({"PointlessBitwiseExpression"})
     @Inject(
         method = "getOverlayBlock",
         at = @At("HEAD"),
